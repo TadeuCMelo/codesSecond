@@ -18,7 +18,7 @@ Player jogadores[3] = {
     {"Joaquim", 1}
 };
 
-// --- Função para desenhar o tabuleiro ---
+
 void tabela(Player jogadores[], int numJogadores) {
     cout << "\ntabuleiro\n\n";
     for (int i = 1; i < TAM; i++) {
@@ -43,7 +43,7 @@ void tabela(Player jogadores[], int numJogadores) {
     cout << endl;
 }
 
-// --- Função que aplica o efeito de uma casa especial ---
+
 int aplicarEfeitoCasa(Player &p, Player jogadores[], int numJogadores) {
     switch (p.pos) {
         case 5:
@@ -101,7 +101,7 @@ bool podeJogar(Player &p, Player jogadores[], int numJogadores) {
     return true;
 }
 
-// --- Movimento do jogador ---
+
 bool moverJogador(Player &p, Player jogadores[], int numJogadores) {
     cout << "\nToca Enter para jogares (" << p.nome << "): ";
     cin.get();
@@ -132,7 +132,7 @@ bool moverJogador(Player &p, Player jogadores[], int numJogadores) {
     return p.pos == 30;
 }
 
-// --- Programa Principal ---
+
 int main() {
     srand(time(0));
 
