@@ -1,48 +1,19 @@
-/*
-{
-"background.fullscreen": {
-    "images": ["https://th.bing.com/th/id/R.45d2f253d7d13f3594167926796f2425?rik=wS%2f5JEJjfDTkDw&riu=http%3a%2f%2fgetwallpapers.com%2fwallpaper%2ffull%2fd%2fc%2f0%2f271697.jpg&ehk=Bxx10ttRR%2fesxhZDszZ5Nx1bL1Zuq4sLSGuNhb40xf8%3d&risl=&pid=ImgRaw&r=0"], // urls of your images
-    "opacity": 0.91, // 0.85 ~ 0.95 recommended
-    "size": "cover", // also css, `cover` to self-adaption (recommended)，or `contain`、`200px 200px`
-    "position": "center", // alias to `background-position`, default `center`
-    "interval": 0 // seconds of interval for carousel, default `0` to disabled.
-},
-"background.editor": {
-    
-
-    "useFront": true,
-    "style": {
-        "background-position": "100% 100%",
-        "background-size": "auto",
-        "opacity": 0.6
-    },
-    "styles": [
-        {},
-        {},
-        {}
-    ],
-    "images": [],
-    "interval": 0,
-    "random": false
-}
-}
-*/
-
-
 #include <iostream>
 
 using namespace std;
 
 class Personagem{
     public:
-        int hp;
-        int xp;
-        int attack1;
+    string nome;
+        float hp;
+        float xp;
+        float attack1;
+        string itens;
 };
 
 class Inimigos{
     public:
-        int hp;
+        float hp;
         int RecompensaXP;
         int attack1;
 };
@@ -51,11 +22,13 @@ class Inimigos{
 
 
 
-Personagem Tadeu{100, 0, 10000};
+Personagem Tadeu{"",100, 0, 10000};
 Inimigos Zell{150, 15, 10};
+Personagem Personagens{"",100,0,10000};
 
-void dano(){
-    //
+void world(){
+
+// ataque
     bool win = false;
     char ataque;
         while (true) {
@@ -90,6 +63,10 @@ if(Zell.hp <= 0){
 }
 
 int main(){
+    string x;
+    cout << "Escreve um Nome para o seu personagem: ";
+    cin >> x;
+    Personagens.nome = x;
   int opcao;
     cout << "\n=== MENU PRINCIPAL ===\n";
     cout << "1 - Entrar no Mundo\n";
@@ -100,7 +77,7 @@ int main(){
 
     switch (opcao) {
         case 1:
-            dano();
+            world();
             break;
         case 2:
             cout << "\n--- Estatísticas ---\n";
