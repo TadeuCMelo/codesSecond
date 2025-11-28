@@ -1,0 +1,26 @@
+#include <iostream>
+#include <vector>
+#include <ctime>
+#include <cstdlib>
+
+using namespace std;
+
+class bingoCard {
+    private:
+
+    public:
+
+vector<vector<int>>
+
+};
+
+
+
+void gerarCartão(){
+
+}
+
+int main(){
+
+    return 0;
+}
