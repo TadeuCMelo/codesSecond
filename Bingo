@@ -1,80 +1,114 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
-#include <ctime>
 using namespace std;
 
-class Cartao {
+class bingoCard {
 public:
-    vector<vector<int>> grelha;
+    vector<vector<int>> num;       // matriz 5x5 com os números
+    vector<vector<bool>> marcado;  // marcação dos números
+    int linhas = 5;
+    int colunas = 5;
 
-    Cartao() {
-        grelha = vector<vector<int>>(5, vector<int>(5, 0));
+    // Construtor
+    bingoCard() {
+        num.resize(linhas, vector<int>(colunas));
+        marcado.resize(linhas, vector<bool>(colunas, false));
     }
 
-    void gerar() {
-        int base[5] = {1, 21, 41, 61, 81};
+    // Gera a cartela com faixas por coluna
+    void gerarCartela() {
+        int inicio = 1;
+        for (int col = 0; col < colunas; col++) {
+            vector<int> valores;
+            for (int i = inicio; i < inicio + 20; i++) {
+                valores.push_back(i);
+            }
+            random_shuffle(valores.begin(), valores.end());
 
-        for (int coluna = 0; coluna < 5; coluna++) {
-            vector<int> numeros;
-
-            for (int v = base[coluna]; v < base[coluna] + 20; v++)
-                numeros.push_back(v);
-
-            for (int i = numeros.size() - 1; i > 0; i--) {
-                int j = rand() % (i + 1);
-                swap(numeros[i], numeros[j]);
+            for (int row = 0; row < linhas; row++) {
+                num[row][col] = valores[row];
             }
 
-            for (int linha = 0; linha < 5; linha++)
-                grelha[coluna][linha] = numeros[linha];
+            inicio += 20;
         }
 
-        grelha[2][2] = -1;
+        // Free space no centro
+        num[2][2] = 0;
+        marcado[2][2] = true;
     }
 
-    void exibir(int id) {
-        cout << "Cartão " << id << ":\n\n";
-        cout << "  B      I      N      G      O\n\n";
 
-        for (int linha = 0; linha < 5; linha++) {
-            for (int coluna = 0; coluna < 5; coluna++) {
-                if (grelha[coluna][linha] == -1) cout << " **    ";
-                else {
-                    if (grelha[coluna][linha] < 10) cout << " ";
-                    cout << grelha[coluna][linha] << "     ";
+    void marcarNumero(int n) {
+        for (int i = 0; i < linhas; i++) {
+            for (int j = 0; j < colunas; j++) {
+                if (num[i][j] == n) {
+                    marcado[i][j] = true;
                 }
             }
-            cout << "\n";
+        }
+    }
+
+    bool temBingo() {
+        // linhas
+        for (int i = 0; i < linhas; i++) {
+            bool linhaCompleta = true;
+            for (int j = 0; j < colunas; j++) {
+                if (!marcado[i][j]) linhaCompleta = false;
+            }
+            if (linhaCompleta) return true;
         }
 
-        cout << "\n-------------------------------\n";
+        // colunas
+        for (int j = 0; j < colunas; j++) {
+            bool colunaCompleta = true;
+            for (int i = 0; i < linhas; i++) {
+                if (!marcado[i][j]) colunaCompleta = false;
+            }
+            if (colunaCompleta) return true;
+        }
+
+        // diagonal principal
+        bool diag1 = true;
+        for (int i = 0; i < linhas; i++) {
+            if (!marcado[i][i]) diag1 = false;
+        }
+        if (diag1) return true;
+
+        // diagonal secundária
+        bool diag2 = true;
+        for (int i = 0; i < linhas; i++) {
+            if (!marcado[i][colunas - 1 - i]) diag2 = false;
+        }
+        if (diag2) return true;
+
+        return false;
+    }
+
+    // Mostrar cartela
+    void mostrar() {
+        for (int i = 0; i < linhas; i++) {
+            for (int j = 0; j < colunas; j++) {
+                if (marcado[i][j])
+                    cout << "**\t";
+                else
+                    cout << num[i][j] << "\t";
+            }
+            cout << endl;
+        }
     }
 };
 
-int main(int argc, char** argv) {
-    if (argc != 2) {
-        cout << "Utilização: " << argv[0] << " [numero_cartoes]\n";
-        return 1;
-    }
 
-    int numero = stoi(argv[1]);
-    if (numero < 1 || numero > 500) {
-        cout << "Erro: o número deve estar entre 1 e 500.\n";
-        return 1;
-    }
 
-    srand(time(0));
 
-    vector<Cartao> cartoes(numero);
+int main() {
+    bingoCard cartela;
+    system("clear");
+    cartela.gerarCartela();
 
-    for (int i = 0; i < numero; i++) {
-        cartoes[i].gerar();
-    }
-
-    for (int i = 0; i < numero; i++) {
-        cartoes[i].exibir(i + 1);
-    }
+    cout << "CARTELA DE BINGO:\n";
+    cartela.mostrar();
 
     return 0;
 }
