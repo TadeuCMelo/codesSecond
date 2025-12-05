@@ -1,26 +1,80 @@
 #include <iostream>
 #include <vector>
+#include <algorithm>
 #include <ctime>
-#include <cstdlib>
-
 using namespace std;
 
-class bingoCard {
-    private:
+class Cartao {
+public:
+    vector<vector<int>> grelha;
 
-    public:
+    Cartao() {
+        grelha = vector<vector<int>>(5, vector<int>(5, 0));
+    }
 
-vector<vector<int>>
+    void gerar() {
+        int base[5] = {1, 21, 41, 61, 81};
 
+        for (int coluna = 0; coluna < 5; coluna++) {
+            vector<int> numeros;
+
+            for (int v = base[coluna]; v < base[coluna] + 20; v++)
+                numeros.push_back(v);
+
+            for (int i = numeros.size() - 1; i > 0; i--) {
+                int j = rand() % (i + 1);
+                swap(numeros[i], numeros[j]);
+            }
+
+            for (int linha = 0; linha < 5; linha++)
+                grelha[coluna][linha] = numeros[linha];
+        }
+
+        grelha[2][2] = -1;
+    }
+
+    void exibir(int id) {
+        cout << "Cartão " << id << ":\n\n";
+        cout << "  B      I      N      G      O\n\n";
+
+        for (int linha = 0; linha < 5; linha++) {
+            for (int coluna = 0; coluna < 5; coluna++) {
+                if (grelha[coluna][linha] == -1) cout << " **    ";
+                else {
+                    if (grelha[coluna][linha] < 10) cout << " ";
+                    cout << grelha[coluna][linha] << "     ";
+                }
+            }
+            cout << "\n";
+        }
+
+        cout << "\n-------------------------------\n";
+    }
 };
 
+int main(int argc, char** argv) {
+    if (argc != 2) {
+        cout << "Utilização: " << argv[0] << " [numero_cartoes]\n";
+        return 1;
+    }
 
+    int numero = stoi(argv[1]);
+    if (numero < 1 || numero > 500) {
+        cout << "Erro: o número deve estar entre 1 e 500.\n";
+        return 1;
+    }
 
-void gerarCartão(){
+    srand(time(0));
 
-}
+    vector<Cartao> cartoes(numero);
 
-int main(){
+    for (int i = 0; i < numero; i++) {
+        cartoes[i].gerar();
+    }
+
+    for (int i = 0; i < numero; i++) {
+        cartoes[i].exibir(i + 1);
+    }
 
     return 0;
 }
