@@ -19,7 +19,7 @@ public:
         marcado.resize(linhas, vector<bool>(colunas, false));
     }
 
-    // Gera a cartela
+
     void gerarCartela() {
         default_random_engine rng(time(0));
 
