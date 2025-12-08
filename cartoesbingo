@@ -21,7 +21,7 @@ public:
 
     // Gera a cartela
     void gerarCartela() {
-        default_random_engine rng(time(NULL));
+        default_random_engine rng(time(0));
 
         int inicio = 1;
         for (int col = 0; col < colunas; col++) {
