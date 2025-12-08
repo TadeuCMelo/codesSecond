@@ -1,96 +1,70 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
+#include <random>
+#include <ctime>
+
 using namespace std;
 
 class bingoCard {
 public:
-    vector<vector<int>> num;       // matriz 5x5 com os números
-    vector<vector<bool>> marcado;  // marcação dos números
+    vector<vector<int>> num;       
+    vector<vector<bool>> marcado;  
     int linhas = 5;
     int colunas = 5;
 
-    // Construtor
     bingoCard() {
         num.resize(linhas, vector<int>(colunas));
         marcado.resize(linhas, vector<bool>(colunas, false));
     }
 
-    // Gera a cartela com faixas por coluna
+  
     void gerarCartela() {
+        default_random_engine aaa(time(NULL));
+
         int inicio = 1;
         for (int col = 0; col < colunas; col++) {
             vector<int> valores;
-            for (int i = inicio; i < inicio + 20; i++) {
+            for (int i = inicio; i < inicio + 20; i++)
                 valores.push_back(i);
-            }
-            random_shuffle(valores.begin(), valores.end());
 
-            for (int row = 0; row < linhas; row++) {
-                num[row][col] = valores[row];
-            }
+            shuffle(valores.begin(), valores.end(), aaa);
+
+            for (int lin = 0; lin < linhas; lin++)
+                num[lin][col] = valores[lin];
 
             inicio += 20;
         }
 
-        // Free space no centro
+        // espaço vazio
         num[2][2] = 0;
         marcado[2][2] = true;
     }
 
-
     void marcarNumero(int n) {
-        for (int i = 0; i < linhas; i++) {
-            for (int j = 0; j < colunas; j++) {
-                if (num[i][j] == n) {
+        for (int i = 0; i < linhas; i++)
+            for (int j = 0; j < colunas; j++)
+                if (num[i][j] == n)
                     marcado[i][j] = true;
-                }
-            }
-        }
     }
 
     bool temBingo() {
-        // linhas
+        // ve se os numeros todos tao marcados
         for (int i = 0; i < linhas; i++) {
-            bool linhaCompleta = true;
             for (int j = 0; j < colunas; j++) {
-                if (!marcado[i][j]) linhaCompleta = false;
+                if (i == 2 && j == 2) continue; // Ignora o centro livre
+                if (!marcado[i][j]) return false; 
             }
-            if (linhaCompleta) return true;
         }
-
-        // colunas
-        for (int j = 0; j < colunas; j++) {
-            bool colunaCompleta = true;
-            for (int i = 0; i < linhas; i++) {
-                if (!marcado[i][j]) colunaCompleta = false;
-            }
-            if (colunaCompleta) return true;
-        }
-
-        // diagonal principal
-        bool diag1 = true;
-        for (int i = 0; i < linhas; i++) {
-            if (!marcado[i][i]) diag1 = false;
-        }
-        if (diag1) return true;
-
-        // diagonal secundária
-        bool diag2 = true;
-        for (int i = 0; i < linhas; i++) {
-            if (!marcado[i][colunas - 1 - i]) diag2 = false;
-        }
-        if (diag2) return true;
-
-        return false;
+        return true;  // se ta tudo marcado manda um true
     }
 
-    // Mostrar cartela
+    // Mostrar cartela (marcados ficam em vermelho)
     void mostrar() {
         for (int i = 0; i < linhas; i++) {
             for (int j = 0; j < colunas; j++) {
                 if (marcado[i][j])
-                    cout << "**\t";
+                    cout << "\033[31m" << num[i][j] << "\033[0m\t"; // vermelho
                 else
                     cout << num[i][j] << "\t";
             }
@@ -99,16 +73,41 @@ public:
     }
 };
 
-
-
-
 int main() {
     bingoCard cartela;
-    system("clear");
     cartela.gerarCartela();
 
-    cout << "CARTELA DE BINGO:\n";
+    vector<int> numeros(100);
+    for (int i = 0; i < 100; i++)
+        numeros[i] = i + 1;
+
+    default_random_engine aaa(time(NULL));
+    shuffle(numeros.begin(), numeros.end(), aaa);
+
+    cout << "CARTELA GERADA:\n";
+    cout << "B       I       N       G       O\n";
     cartela.mostrar();
+
+    int index = 0;
+
+    do {
+        cout << "\ntoca no enter pra sorteares um numero...";
+        cin.get();
+
+        int sorteado = numeros[index++];
+        cout << "\nNumero que saiu: " << sorteado << "\n";
+
+        cartela.marcarNumero(sorteado);
+
+        cout << "\n--- CARTELA ATUALIZADA ---\n";
+          cout << "B       I       N       G       O\n";
+        cartela.mostrar();
+
+        if (cartela.temBingo()) {
+            cout << "\n\033[32mBINGO! Ganhaste\033[0m\n";
+            break;
+        }
+    } while (index < 100);
 
     return 0;
 }
