@@ -1,0 +1,99 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <random>
+#include <ctime>
+#include <cstdlib>
+
+using namespace std;
+
+
+void setColor(int colorCode) {
+    cout << "\033[" << colorCode << "m"; 
+}
+
+
+void resetColor() {
+    cout << "\033[0m"; 
+}
+
+
+void exibirTabela(const vector<int>& tabela, const vector<bool>& sorteados) {
+    for (int i = 0; i < 100; i++) {
+        // Se o numero sair muda a cor
+        if (sorteados[i]) {
+            setColor(31); 
+        } else {
+            resetColor();
+        }
+        
+        cout << tabela[i] << "\t"; 
+
+        if ((i + 1) % 10 == 0) {
+            cout << endl;
+        }
+    }
+    resetColor(); 
+}
+
+
+void exibirUltimosNumeros(const vector<int>& ultimosSorteados) {
+    cout << "\nultimos 5 números sorteados: ";
+    for (int i = 0; i < ultimosSorteados.size(); ++i) {
+        cout << ultimosSorteados[i] << " ";  // mostra os numeros sorteados
+    }
+    cout << endl;
+}
+
+int main() {
+    vector<int> tabela(100);          //  armazena os números de 1 a 100
+    vector<bool> sorteados(100, false); // marca se o número foi sorteado
+    vector<int> ultimosSorteados;      // guarda os ultimos 5 números sorteados
+
+
+    for (int i = 0; i < 100; ++i) {
+        tabela[i] = i + 1;
+    }
+
+
+    vector<int> numeros(100);
+    for (int i = 0; i < 100; ++i) {
+        numeros[i] = i + 1;
+    }
+
+ 
+    default_random_engine rng(time(NULL));
+    shuffle(numeros.begin(), numeros.end(), rng);  // embaralha os números de 1 a 100
+
+    int numeroSorteadoIndex = 0;
+
+    while (numeroSorteadoIndex < 100) {
+        system("clear");
+
+        // sorteia o proximo numero
+        int numeroSorteado = numeros[numeroSorteadoIndex++];
+        sorteados[numeroSorteado - 1] = true;  // mete o numero como sorteado
+
+        // mete o numeru que saiu na lista dos ultimos 5 sorteados
+        ultimosSorteados.push_back(numeroSorteado);
+
+ 
+        if (ultimosSorteados.size() > 5) {
+            ultimosSorteados.erase(ultimosSorteados.begin());  // remove o primeiro número da lista
+        }
+
+   
+        exibirTabela(tabela, sorteados);
+        exibirUltimosNumeros(ultimosSorteados);
+
+  
+        if (numeroSorteadoIndex < 100) {
+            cout << "\nToca no enter pra ter outro numero";
+            cin.get(); 
+        }
+    }
+
+    cout << "\nOs 100 numeros foram sorteados!" << endl;
+
+    return 0;
+}
