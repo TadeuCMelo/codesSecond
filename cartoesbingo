@@ -1,0 +1,98 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <random>
+#include <ctime>
+#include <fstream>
+
+using namespace std;
+
+class bingoCard {
+public:
+    vector<vector<int>> num;       
+    vector<vector<bool>> marcado;  
+    int linhas = 5;
+    int colunas = 5;
+
+    bingoCard() {
+        num.resize(linhas, vector<int>(colunas));
+        marcado.resize(linhas, vector<bool>(colunas, false));
+    }
+
+    // Gera a cartela
+    void gerarCartela() {
+        default_random_engine rng(time(NULL));
+
+        int inicio = 1;
+        for (int col = 0; col < colunas; col++) {
+            vector<int> valores;
+            for (int i = inicio; i < inicio + 20; i++)
+                valores.push_back(i);
+
+            shuffle(valores.begin(), valores.end(), rng);
+
+            for (int row = 0; row < linhas; row++)
+                num[row][col] = valores[row];
+
+            inicio += 20;
+        }
+
+     
+        num[2][2] = 0;  
+        marcado[2][2] = true;  
+    }
+
+
+    void mostrar(ofstream &arquivo) {
+        for (int i = 0; i < linhas; i++) {  //linha
+            for (int j = 0; j < colunas; j++) {  //coluna
+                if (i == 2 && j == 2) {  
+                    arquivo << "**    ";
+                } else {
+                    arquivo << num[i][j] << "     ";  
+                }
+            }
+            arquivo << endl;  
+        }
+    }
+};
+
+int main() {
+    int numeroDeCartelas;
+
+
+    cout << "escreve o numero total de cartelas de Bingo: ";
+    cin >> numeroDeCartelas;
+
+   
+    if (numeroDeCartelas <= 0 || numeroDeCartelas >= 21) {
+        cout << "O numero de cartelas deve ser maior que 0 ou menor que 21!" << endl;
+        return 1;
+    }
+
+    
+    for (int i = 1; i <= numeroDeCartelas; ++i) {
+        bingoCard cartela;
+        cartela.gerarCartela();  
+
+
+        ofstream arquivo("cartoes_bingo_" + to_string(i) + ".txt");
+
+     
+        if (!arquivo.is_open()) {
+            cout << "Erro ao abrir o arquivo cartoes_bingo_" << i << ".txt!" << endl;
+            continue;
+        }
+
+
+        arquivo << "Carta " << i << ":\n";
+        arquivo << " B       I       N       G       O \n";
+        cartela.mostrar(arquivo);  // mete a cartela
+        arquivo << "\n";  
+
+        arquivo.close();  
+        cout << "Cartão de Bingo " << i << " foi salvo  em 'cartoes_bingo_" << i << ".txt'.\n";
+    }
+
+    return 0;
+}
