@@ -62,7 +62,7 @@ int main() {
     }
 
  
-    default_random_engine rng(time(NULL));
+    default_random_engine rng(time(0));
     shuffle(numeros.begin(), numeros.end(), rng);  // embaralha os números de 1 a 100
 
     int numeroSorteadoIndex = 0;
