@@ -16,7 +16,6 @@ public:
 
     bingoCard() {
         num.resize(linhas, vector<int>(colunas));
-        marcado.resize(linhas, vector<bool>(colunas, false));
     }
 
 
@@ -39,7 +38,6 @@ public:
 
      
         num[2][2] = 0;  
-        marcado[2][2] = true;  
     }
 
 
